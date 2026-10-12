@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nayab Cosmetic - Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Poppins, sans-serif; background: #fff6f9; color: #382630; }
+    header { padding: 18px 5%; background: #51283c; color: white; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    header h1 { font-size: 22px; margin: 0; }
+    header a { color: white; text-decoration: none; font-size: 14px; }
+    main { max-width: 1000px; padding: 25px 15px; margin: auto; }
+    .panel { background: white; border: 1px solid #f0dce5; border-radius: 14px; padding: 24px; margin-bottom: 22px; box-shadow: 0 6px 22px #51283c08; }
+    h2 { margin-top: 0; font-size: 21px; }
+    label { display: block; margin: 14px 0 6px; font-size: 13px; font-weight: 600; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #e4ccd7; border-radius: 8px; font: inherit; background: white; }
+    button { font: inherit; border: 0; cursor: pointer; border-radius: 8px; padding: 11px 17px; background: #ad3e6c; color: white; }
+    button:hover { background: #84274f; }
+    button:disabled { opacity: .6; cursor: wait; }
+    .primary { width: 100%; margin-top: 18px; }
+    .notice { margin-top: 14px; font-size: 13px; overflow-wrap: anywhere; }
+    .error { color: #bb243e; }
+    .success { color: #177548; }
+    .hidden { display: none !important; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+    .preview { display: block; max-width: 180px; max-height: 180px; object-fit: contain; margin-top: 12px; border-radius: 9px; }
+    .products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+    .product { border: 1px solid #f0dce5; border-radius: 10px; overflow: hidden; }
+    .product img { width: 100%; height: 175px; object-fit: cover; background: #f8edf1; }
+    .product-info { padding: 12px; }
+    .product-info h3 { font-size: 15px; margin: 0 0 7px; overflow-wrap: anywhere; }
+    .product-info p { margin: 5px 0 12px; font-size: 13px; }
+    .delete { background: #b4233b; font-size: 12px; }
+    .top-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    @media (max-width: 650px) { .form-grid, .products { grid-template-columns: 1fr 1fr; } .panel { padding: 17px; } }
+    @media (max-width: 420px) { .products { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌸 Nayab Cosmetic Admin</h1>
+    <a href="/">ग्राहक की वेबसाइट देखें ↗</a>
+  </header>
+
+  <main>
+    <section class="panel" id="loginSection">
+      <h2>Admin Login</h2>
+      <p>अपने Admin पासवर्ड से लॉगिन करें।</p>
+      <form id="loginForm">
+        <label for="password">Admin Password</label>
+        <input id="password" type="password" required autocomplete="current-password" placeholder="पासवर्ड लिखें">
+        <button class="primary" id="loginButton" type="submit">Login करें</button>
+      </form>
+      <div id="loginNotice" class="notice" role="status"></div>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="panel">
+        <div class="top-actions">
+          <h2>नया प्रोडक्ट जोड़ें</h2>
+          <button id="logoutButton" type="button">Logout</button>
+        </div>
+
+        <form id="productForm">
+          <div class="form-grid">
+            <div>
+              <label for="productName">प्रोडक्ट का नाम *</label>
+              <input id="productName" name="name" required maxlength="120" placeholder="जैसे: Lipstick">
+            </div>
+            <div>
+              <label for="productPrice">कीमत (₹) *</label>
+              <input id="productPrice" name="price" type="number" min="0" step="0.01" required placeholder="जैसे: 199">
+            </div>
+            <div>
+              <label for="productCategory">कैटेगरी *</label>
+              <select id="productCategory" name="category" required>
+                <option value="">कैटेगरी चुनें</option>
+                <option value="Makeup">Makeup - मेकअप</option>
+                <option value="Skin Care">Skin Care - स्किन केयर</option>
+                <option value="Hair Care">Hair Care - हेयर केयर</option>
+                <option value="Personal Care">Personal Care - पर्सनल केयर</option>
+                <option value="Accessories">Accessories - एक्सेसरीज़</option>               
+                <option value="Popular">🔥 Popular - पॉपुलर</option>
+                <option value="Offers">🎁 Offers - ऑफर</option>
+          </select>
+            </div>
+            <div>
+              <label for="productImage">प्रोडक्ट की फोटो * (अधिकतम 5 MB)</label>
+              <input id="productImage" name="image" type="file" accept="image/*" required>
+              <img id="imagePreview" class="preview hidden" alt="फोटो प्रीव्यू">
+            </div>
+          </div>
+          <button class="primary" id="addButton" type="submit">प्रोडक्ट सेव करें</button>
+        </form>
+        <div id="productNotice" class="notice" role="status"></div>
+      </div>
+
+      <div class="panel">
+        <h2>आपके प्रोडक्ट</h2>
+        <div id="productList" class="products">
+          <p>प्रोडक्ट लोड हो रहे हैं...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const loginSection = document.getElementById("loginSection");
+    const dashboard = document.getElementById("dashboard");
+    const loginForm = document.getElementById("loginForm");
+    const loginNotice = document.getElementById("loginNotice");
+    const productForm = document.getElementById("productForm");
+    const productNotice = document.getElementById("productNotice");
+    const productList = document.getElementById("productList");
+    const imageInput = document.getElementById("productImage");
+    const imagePreview = document.getElementById("imagePreview");
+    const loginButton = document.getElementById("loginButton");
+    const addButton = document.getElementById("addButton");
+
+    let previewUrl = null;
+
+    function showNotice(element, message, success = false) {
+      element.textContent = message;
+      element.className = "notice " + (success ? "success" : "error");
+    }
+
+    function clearNotice(element) {
+      element.textContent = "";
+      element.className = "notice";
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed: " + response.status);
+      }
+
+      return data;
+    }
+
+    function showDashboard() {
+      loginSection.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+    }
+
+    function showLogin() {
+      dashboard.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+    }
+
+    async function loadProducts() {
+      productList.textContent = "प्रोडक्ट लोड हो रहे हैं...";
+
+      try {
+        const data = await api("/api/products");
+        const products = Array.isArray(data) ? data : [];
+
+        if (products.length === 0) {
+          productList.innerHTML = "<p>अभी कोई प्रोडक्ट नहीं है। ऊपर से पहला प्रोडक्ट जोड़ें।</p>";
+          return;
+        }
+
+        productList.innerHTML = "";
+
+        products.forEach(product => {
+          const card = document.createElement("article");
+          card.className = "product";
+
+          const img = document.createElement("img");
+          img.src = product.image || "";
+          img.alt = product.name || "Cosmetic product";
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = "https://placehold.co/400x400/f8edf1/ad3e6c?text=Nayab";
+          };
+
+          const info = document.createElement("div");
+          info.className = "product-info";
+
+          const title = document.createElement("h3");
+          title.textContent = product.name;
+
+          const category = document.createElement("p");
+          category.textContent = product.category + " · ₹" + Number(product.price).toLocaleString("en-IN");
+
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "delete";
+          deleteButton.textContent = "प्रोडक्ट हटाएँ";
+
+          deleteButton.addEventListener("click", async () => {
+            if (!confirm("क्या यह प्रोडक्ट हटाना चाहते हैं?")) return;
+
+            deleteButton.disabled = true;
+
+            try {
+              await api("/api/admin/products/" + encodeURIComponent(product.id), {
+                method: "DELETE"
+              });
+              showNotice(productNotice, "प्रोडक्ट हटा दिया गया।", true);
+              await loadProducts();
+            } catch (error) {
+              showNotice(productNotice, error.message);
+              deleteButton.disabled = false;
+            }
+          });
+
+          info.append(title, category, deleteButton);
+          card.append(img, info);
+          productList.append(card);
+        });
+      } catch (error) {
+        productList.textContent = error.message;
+      }
+    }
+
+    loginForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearNotice(loginNotice);
+      loginButton.disabled = true;
+      loginButton.textContent = "Login हो रहा है...";
+
+      try {
+        await api("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            password: document.getElementById("password").value
+          })
+        });
+
+        document.getElementById("password").value = "";
+        showDashboard();
+        await loadProducts();
+      } catch (error) {
+        showNotice(loginNotice, error.message);
+      } finally {
+        loginButton.disabled = false;
+        loginButton.textContent = "Login करें";
+      }
+    });
+
+    productForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearNotice(productNotice);
+
+      if (!productForm.reportValidity()) return;
+
+      const file = imageInput.files[0];
+
+      if (!file) {
+        showNotice(productNotice, "कृपया प्रोडक्ट की फोटो चुनें।");
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        showNotice(productNotice, "कृपया सही इमेज फ़ाइल चुनें।");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showNotice(productNotice, "फोटो 5 MB से छोटी होनी चाहिए।");
+        return;
+      }
+
+      addButton.disabled = true;
+      addButton.textContent = "सेव हो रहा है...";
+
+      try {
+        const formData = new FormData(productForm);
+        await api("/api/admin/products", {
+          method: "POST",
+          body: formData
+        });
+
+        productForm.reset();
+
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+        imagePreview.removeAttribute("src");
+        imagePreview.classList.add("hidden");
+
+        showNotice(productNotice, "प्रोडक्ट सफलतापूर्वक सेव हो गया!", true);
+        await loadProducts();
+      } catch (error) {
+        showNotice(productNotice, error.message);
+      } finally {
+        addButton.disabled = false;
+        addButton.textContent = "प्रोडक्ट सेव करें";
+      }
+    });
+
+    imageInput.addEventListener("change", () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
+
+      const file = imageInput.files[0];
+
+      if (!file) {
+        imagePreview.removeAttribute("src");
+        imagePreview.classList.add("hidden");
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      imagePreview.src = previewUrl;
+      imagePreview.classList.remove("hidden");
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      // Server-side logout will be added in the next security step.
+      showNotice(productNotice, "लॉगआउट के लिए सर्वर में logout route जोड़ना अगला काम है।");
+    });
+  </script>
+</body>
+</html>

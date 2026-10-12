@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1791694911908",
+    "name": "nell palic",
+    "category": "Makeup",
+    "price": 123,
+    "image": "/uploads/1791694911887-510501084.jpg"
+  },
+  {
+    "id": "1791696400023",
+    "name": "nell palic",
+    "category": "Makeup",
+    "price": 123,
+    "image": "/uploads/1791696399985-525091398.jpg"
+  },
+  {
+    "id": "1791696703181",
+    "name": "nell palic",
+    "category": "Popular",
+    "price": 34,
+    "image": "/uploads/1791696703158-708261692.jpg"
+  },
+  {
+    "id": "1791697618926",
+    "name": "nell palic",
+    "category": "Offers",
+    "price": 76,
+    "image": "/uploads/1791697618855-442394168.jpg"
+  },
+  {
+    "id": "1791698679634",
+    "name": "kala mehadi",
+    "category": "Hair Care",
+    "price": 45,
+    "image": "/uploads/1791698679622-383106428.jpg"
+  },
+  {
+    "id": "1791699418887",
+    "name": "kangan",
+    "category": "Accessories",
+    "price": 10,
+    "image": "/uploads/1791699418875-722402176.jpg"
+  }
+]

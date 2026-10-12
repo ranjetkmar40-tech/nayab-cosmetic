@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category Products | Nayab Cosmetic</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff7fa;
+      color: #333;
+    }
+
+    header {
+      background: #c2185b;
+      color: white;
+      padding: 18px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    header h2 {
+      font-size: 23px;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .heading {
+      text-align: center;
+      padding: 30px 15px 20px;
+    }
+
+    .heading h1 {
+      color: #c2185b;
+      margin-bottom: 8px;
+    }
+
+    #searchInput {
+      display: block;
+      width: min(90%, 450px);
+      margin: 0 auto 25px;
+      padding: 12px 15px;
+      border: 1px solid #e4b3c7;
+      border-radius: 25px;
+      font-size: 16px;
+      outline-color: #c2185b;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      padding: 0 5% 40px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px #00000012;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: contain;
+      background: white;
+    }
+
+    .product-info {
+      padding: 14px;
+    }
+
+    .product-category {
+      color: #c2185b;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .product-info h3 {
+      font-size: 17px;
+      margin-bottom: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .price {
+      color: #c2185b;
+      font-weight: bold;
+      font-size: 19px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 30px 10px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h2>🌸 Nayab Cosmetic</h2>
+    <a href="/">← Customer Dashboard</a>
+  </header>
+
+  <section class="heading">
+    <h1 id="categoryTitle">Products</h1>
+    <p>इस कैटेगरी के सभी उपलब्ध प्रोडक्ट</p>
+  </section>
+
+  <input
+    type="search"
+    id="searchInput"
+    placeholder="इस कैटेगरी में प्रोडक्ट खोजें..."
+  >
+
+  <main class="products" id="productGrid">
+    <div class="empty">प्रोडक्ट लोड हो रहे हैं...</div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category") || "";
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    let categoryProducts = [];
+
+    document.getElementById("categoryTitle").textContent =
+      category ? category + " Products" : "Products";
+
+    function renderProducts() {
+      const search = searchInput.value.trim().toLowerCase();
+
+      const filtered = categoryProducts.filter(product =>
+        (product.name || "").toLowerCase().includes(search)
+      );
+
+      if (filtered.length === 0) {
+        productGrid.innerHTML =
+          '<div class="empty">इस कैटेगरी में कोई प्रोडक्ट नहीं मिला।</div>';
+        return;
+      }
+
+      productGrid.innerHTML = filtered.map(product => `
+        <article class="product-card">
+          <img
+            src="${product.image || ""}"
+            alt="${product.name || "Cosmetic product"}"
+            onerror="this.onerror=null;this.src='https://placehold.co/500x500/f8edf1/ad3e6c?text=Nayab+Cosmetic'"
+          >
+          <div class="product-info">
+            <div class="product-category">
+              ${product.category || ""}
+            </div>
+            <h3>${product.name || "Cosmetic Product"}</h3>
+            <div class="price">
+              ₹${Number(product.price || 0).toLocaleString("en-IN")}
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    async function loadProducts() {
+      try {
+        if (!category) {
+          throw new Error("Category nahi mili");
+        }
+
+        const response = await fetch("/api/products");
+        if (!response.ok) throw new Error("Products load nahi hue");
+
+        const data = await response.json();
+        const products = Array.isArray(data)
+          ? data
+          : (data.products || []);
+
+        categoryProducts = products.filter(product =>
+          (product.category || "").toLowerCase() === category.toLowerCase()
+        );
+
+        renderProducts();
+      } catch (error) {
+        console.error(error);
+        productGrid.innerHTML =
+          '<div class="empty">प्रोडक्ट लोड नहीं हुए। Dashboard पर वापस जाकर फिर कोशिश करें।</div>';
+      }
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    loadProducts();
+  </script>
+</body>
+</html>
+```

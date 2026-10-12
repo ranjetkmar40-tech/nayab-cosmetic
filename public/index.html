@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nayab Cosmetic | Beauty & Care</title>
+  <meta name="description" content="Nayab Cosmetic - Beauty, Makeup and Skincare Products">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: #fffafa; color: #33272d; }
+    a { color: inherit; text-decoration: none; }
+    .topbar { background: #422633; color: white; text-align: center; padding: 9px; font-size: 12px; }
+    header { background: white; padding: 17px 6%; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; box-shadow: 0 3px 15px #4b24300d; }
+    .logo { color: #b44370; font-size: 27px; font-weight: 700; }
+    .logo span { color: #422633; }
+    nav { display: flex; gap: 22px; font-size: 14px; }
+    nav a:hover { color: #b44370; }
+    .search { padding: 10px 14px; border: 1px solid #ead7df; border-radius: 25px; outline: none; width: 220px; max-width: 100%; }
+    .hero { margin: 24px auto; width: 92%; min-height: 350px; border-radius: 18px; padding: 55px 6%; display: flex; align-items: center; background: linear-gradient(90deg, #f9dfe8 0%, #f9dfe8ee 43%, #f9dfe833 100%), url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=85') center/cover; }
+    .hero-content { max-width: 470px; }
+    .eyebrow { color: #a73566; font-size: 13px; font-weight: 600; letter-spacing: 2px; }
+    h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.2; margin: 12px 0; }
+    .hero p { line-height: 1.8; color: #644e58; }
+    .shop-btn { display: inline-block; margin-top: 22px; background: #ad3e6c; color: white; border: 0; padding: 13px 25px; border-radius: 25px; cursor: pointer; font: inherit; }
+    .shop-btn:hover { background: #84274f; }
+    .section { padding: 28px 6%; }
+    .section-heading { text-align: center; margin-bottom: 25px; }
+    .section-heading h2 { font-size: 29px; }
+    .section-heading p { color: #887680; font-size: 14px; margin-top: 5px; }
+    .categories { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .category-btn { padding: 10px 18px; border-radius: 25px; border: 1px solid #ecd6df; background: white; cursor: pointer; font: inherit; font-size: 13px; }
+    .category-btn.active, .category-btn:hover { background: #ad3e6c; color: white; border-color: #ad3e6c; }
+    .products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+    .product-card { overflow: hidden; background: white; border-radius: 13px; border: 1px solid #f0e4e9; transition: transform .2s, box-shadow .2s; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px #67243b12; }
+    .product-card img { width: 100%; height: 220px; object-fit: cover; background: #f8edf1; display: block; }
+    .product-info { padding: 15px; }
+    .product-category { font-size: 11px; color: #ad3e6c; }
+    .product-info h3 { font-size: 15px; margin: 5px 0 8px; }
+    .price { font-size: 18px; font-weight: 700; color: #ad3e6c; }
+    .empty { text-align: center; grid-column: 1 / -1; color: #806d77; padding: 35px 10px; background: white; border-radius: 12px; }
+    .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .benefit { padding: 25px 12px; background: white; border-radius: 12px; text-align: center; border: 1px solid #f0e4e9; }
+    .benefit b { display: block; margin: 8px 0; }
+    .benefit p { font-size: 12px; color: #887680; }
+    footer { margin-top: 35px; background: #422633; color: white; text-align: center; padding: 30px 15px; }
+    footer p { font-size: 13px; color: #ead7df; margin-top: 7px; }
+    @media (max-width: 850px) { .products { grid-template-columns: repeat(3, minmax(0, 1fr)); } nav { order: 3; width: 100%; justify-content: center; } }
+    @media (max-width: 600px) { header { padding: 15px 5%; } .logo { font-size: 23px; } .search { width: 100%; order: 4; } .hero { min-height: 300px; padding: 30px 7%; background-position: 60% center; } .products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .product-card img { height: 170px; } .product-info { padding: 11px; } .product-info h3 { font-size: 13px; } .section { padding: 24px 5%; } .benefits { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">✨ Nayab Cosmetic में आपका स्वागत है — Beauty & Care ✨</div>
+
+  <header>
+    <a class="logo" href="#">Nayab <span>Cosmetic</span></a>
+    <nav>
+      <a href="#">होम</a>
+      <a href="#categories">कैटेगरी</a>
+      <a href="#products">प्रोडक्ट्स</a>
+      <a href="#contact">संपर्क</a>
+    </nav>
+    <input class="search" id="searchInput" type="search" placeholder="प्रोडक्ट खोजें...">
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">YOUR BEAUTY, YOUR STYLE</div>
+        <h1>आपकी खूबसूरती,<br>हमारी पसंद ❤️</h1>
+        <p>मेकअप, स्किन केयर और रोज़मर्रा की ब्यूटी ज़रूरतों के लिए अपने पसंदीदा प्रोडक्ट खोजें।</p>
+        <a class="shop-btn" href="#products">अभी प्रोडक्ट देखें →</a>
+      </div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="section-heading">
+        <h2>कैटेगरी चुनें</h2>
+        <p>अपनी पसंद के ब्यूटी प्रोडक्ट खोजें</p>
+      </div>
+      <div class="categories" id="categoryButtons">
+        <button class="category-btn active" data-category="all">सभी प्रोडक्ट</button>
+        <button class="category-btn" data-category="Makeup">मेकअप</button>
+        <button class="category-btn" data-category="Skin Care">स्किन केयर</button>
+        <button class="category-btn" data-category="Hair Care">हेयर केयर</button>
+        <button class="category-btn" data-category="Personal Care">पर्सनल केयर</button>
+        <button class="category-btn" data-category="Accessories">एक्सेसरीज़</button>
+      </div>
+    </section>
+
+    
+<!-- POPULAR PRODUCTS -->
+<section class="section" id="popular">
+  <div class="section-heading">
+    <h2>🔥 Popular Products</h2>
+    <p>हमारे सबसे पसंदीदा ब्यूटी प्रोडक्ट्स</p>
+  </div>
+  <div class="products" id="popularGrid">
+    <div class="empty">प्रोडक्ट लोड हो रहे हैं...</div>
+  </div>
+</section>
+
+<!-- SPECIAL OFFERS -->
+<section class="section" id="offers">
+  <div class="section-heading">
+    <h2>🎁 Special Offers</h2>
+    <p>खास ऑफर वाले प्रोडक्ट्स</p>
+  </div>
+  <div class="products" id="offersGrid">
+    <div class="empty">ऑफर लोड हो रहे हैं...</div>
+  </div>
+</section>
+
+
+    <section class="section">
+      <div class="section-heading"><h2>हमें क्यों चुनें?</h2></div>
+      <div class="benefits">
+        <div class="benefit"><div>💄</div><b>ब्यूटी कलेक्शन</b><p>अलग-अलग कैटेगरी के प्रोडक्ट</p></div>
+        <div class="benefit"><div>🌸</div><b>आपकी पसंद</b><p>अपनी ज़रूरत के अनुसार खोजें</p></div>
+        <div class="benefit"><div>🛍️</div><b>आसान ब्राउज़िंग</b><p>प्रोडक्ट और कीमत एक जगह</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <h2>Nayab Cosmetic</h2>
+    <p>Beauty • Makeup • Skin Care</p>
+    <p>© <span id="year"></span> Nayab Cosmetic</p>
+  </footer>
+
+  ```html
+<script>
+    const popularGrid = document.getElementById("popularGrid");
+    const offersGrid = document.getElementById("offersGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    let allProducts = [];
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    // Product card banane ka function
+    function createProductCard(product) {
+      const image = product.image || "";
+
+      return `
+        <article class="product-card">
+          <img
+            src="${image}"
+            alt="${product.name || "Cosmetic product"}"
+            onerror="this.onerror=null;this.src='https://placehold.co/500x500/f8edf1/ad3e6c?text=Nayab+Cosmetic'"
+          >
+          <div class="product-info">
+            <div class="product-category">
+              ${product.category || "Beauty"}
+            </div>
+            <h3>${product.name || "Cosmetic Product"}</h3>
+            <div class="price">
+              ₹${Number(product.price || 0).toLocaleString("en-IN")}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // Products ko Popular aur Offers mein dikhana
+    function renderProducts() {
+      if (!popularGrid || !offersGrid) {
+        console.error(
+          "popularGrid ya offersGrid nahi mila. HTML mein IDs check karein."
+        );
+        return;
+      }
+
+      const searchText = searchInput
+        ? searchInput.value.trim().toLowerCase()
+        : "";
+
+      const filtered = allProducts.filter(product => {
+        const name = (product.name || "").toLowerCase();
+        const category = (product.category || "").toLowerCase();
+
+        return name.includes(searchText) ||
+               category.includes(searchText);
+      });
+
+      const popularProducts = filtered.filter(
+        product => (product.category || "").toLowerCase() === "popular"
+      );
+
+      const offerProducts = filtered.filter(
+        product => (product.category || "").toLowerCase() === "offers"
+      );
+
+      popularGrid.innerHTML = popularProducts.length
+        ? popularProducts.map(createProductCard).join("")
+        : '<div class="empty">अभी Popular Products उपलब्ध नहीं हैं।</div>';
+
+      offersGrid.innerHTML = offerProducts.length
+        ? offerProducts.map(createProductCard).join("")
+        : '<div class="empty">अभी Special Offers उपलब्ध नहीं हैं।</div>';
+    }
+
+    // Server se products load karna
+    async function loadProducts() {
+      try {
+        const response = await fetch("/api/products");
+
+        if (!response.ok) {
+          throw new Error("Products load nahi hue");
+        }
+
+        const data = await response.json();
+
+        allProducts = Array.isArray(data)
+          ? data
+          : (data.products || []);
+
+        renderProducts();
+
+      } catch (error) {
+        console.error("Products loading error:", error);
+
+        if (popularGrid) {
+          popularGrid.innerHTML =
+            '<div class="empty">Popular Products लोड नहीं हुए।</div>';
+        }
+
+        if (offersGrid) {
+          offersGrid.innerHTML =
+            '<div class="empty">Special Offers लोड नहीं हुए।</div>';
+        }
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", renderProducts);
+    }
+
+    loadProducts();
+    
+    // Category par click karne se category ka naya page khulega
+    const categoryButtons = document.getElementById("categoryButtons");
+
+    if (categoryButtons) {
+      categoryButtons.addEventListener("click", function(event) {
+        const button = event.target.closest("button[data-category]");
+        if (!button) return;
+
+        const category = button.dataset.category;
+
+        // Popular aur Offers ke liye alag category page nahi kholna
+        if (
+          category === "all" ||
+          category === "Popular" ||
+          category === "Offers"
+        ) {
+          return;
+        }
+
+        window.location.href =
+          "category.html?category=" + encodeURIComponent(category);
+      });
+    }
+
+</script>
+</body>
+</html>
