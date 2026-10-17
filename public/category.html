@@ -1,9 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Category Products | Nayab Cosmetic</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -13,9 +17,9 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Poppins", Arial, sans-serif;
       background: #fff7fa;
-      color: #333;
+      color: #422633;
     }
 
     header {
@@ -49,6 +53,11 @@
       margin-bottom: 8px;
     }
 
+    .heading p {
+      color: #777;
+      font-size: 14px;
+    }
+
     #searchInput {
       display: block;
       width: min(90%, 450px);
@@ -56,13 +65,13 @@
       padding: 12px 15px;
       border: 1px solid #e4b3c7;
       border-radius: 25px;
-      font-size: 16px;
+      font-size: 15px;
       outline-color: #c2185b;
     }
 
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       padding: 0 5% 40px;
     }
@@ -72,9 +81,16 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 3px 12px #00000012;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 7px 18px #00000018;
     }
 
     .product-card img {
+      display: block;
       width: 100%;
       height: 220px;
       object-fit: contain;
@@ -86,21 +102,62 @@
     }
 
     .product-category {
+      display: inline-block;
       color: #c2185b;
-      font-size: 13px;
-      margin-bottom: 7px;
+      background: #fff0f5;
+      border-radius: 20px;
+      padding: 4px 9px;
+      font-size: 12px;
+      margin-bottom: 9px;
     }
 
     .product-info h3 {
-      font-size: 17px;
+      font-size: 16px;
       margin-bottom: 10px;
       overflow-wrap: anywhere;
+      min-height: 24px;
     }
 
     .price {
       color: #c2185b;
       font-weight: bold;
-      font-size: 19px;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .product-actions button {
+      flex: 1;
+      padding: 10px 5px;
+      border: none;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .add-cart {
+      background: #f9e3ec;
+      color: #ad2459;
+    }
+
+    .add-cart:hover {
+      background: #f1cbdc;
+    }
+
+    .buy-now {
+      background: #c2185b;
+      color: white;
+    }
+
+    .buy-now:hover {
+      background: #941046;
     }
 
     .empty {
@@ -108,6 +165,41 @@
       text-align: center;
       padding: 30px 10px;
       color: #777;
+    }
+
+    @media (max-width: 420px) {
+      .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .product-card img {
+        height: 160px;
+      }
+
+      .product-info {
+        padding: 10px;
+      }
+
+      .product-info h3 {
+        font-size: 14px;
+      }
+
+      .product-actions {
+        flex-direction: column;
+      }
+
+      .product-actions button {
+        width: 100%;
+        padding: 10px 4px;
+        font-size: 12px;
+      }
+
+      header h2 {
+        font-size: 19px;
+      }
     }
   </style>
 </head>
@@ -127,6 +219,7 @@
     type="search"
     id="searchInput"
     placeholder="इस कैटेगरी में प्रोडक्ट खोजें..."
+    aria-label="प्रोडक्ट खोजें"
   >
 
   <main class="products" id="productGrid">
@@ -144,6 +237,30 @@
     document.getElementById("categoryTitle").textContent =
       category ? category + " Products" : "Products";
 
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function (char) {
+        const entities = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+        return entities[char];
+      });
+    }
+
+    function openOrder(product) {
+      const params = new URLSearchParams({
+        name: product.name || "",
+        price: String(Number(product.price) || 0),
+        image: product.image || "",
+        category: product.category || ""
+      });
+
+      window.location.href = "order.html?" + params.toString();
+    }
+
     function renderProducts() {
       const search = searchInput.value.trim().toLowerCase();
 
@@ -157,25 +274,72 @@
         return;
       }
 
-      productGrid.innerHTML = filtered.map(product => `
-        <article class="product-card">
-          <img
-            src="${product.image || ""}"
-            alt="${product.name || "Cosmetic product"}"
-            onerror="this.onerror=null;this.src='https://placehold.co/500x500/f8edf1/ad3e6c?text=Nayab+Cosmetic'"
-          >
-          <div class="product-info">
-            <div class="product-category">
-              ${product.category || ""}
+      productGrid.innerHTML = filtered.map((product, index) => {
+        const name = escapeHTML(product.name || "Cosmetic Product");
+        const categoryName = escapeHTML(product.category || "");
+        const image = escapeHTML(product.image || "");
+        const price = Number(product.price) || 0;
+
+        return `
+          <article class="product-card">
+            <img
+              src="${image}"
+              alt="${name}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='https://placehold.co/500x500/f8edf1/ad3e6c?text=Nayab+Cosmetic'"
+            >
+
+            <div class="product-info">
+              <div class="product-category">${categoryName}</div>
+              <h3>${name}</h3>
+
+              <div class="price">
+                ₹${price.toLocaleString("en-IN")}
+              </div>
+
+              <div class="product-actions">
+                <button
+                  type="button"
+                  class="add-cart"
+                  data-index="${index}"
+                  data-action="cart"
+                >
+                  🛒 Add to Cart
+                </button>
+
+                <button
+                  type="button"
+                  class="buy-now"
+                  data-index="${index}"
+                  data-action="buy"
+                >
+                  Buy Now
+                </button>
+              </div>
             </div>
-            <h3>${product.name || "Cosmetic Product"}</h3>
-            <div class="price">
-              ₹${Number(product.price || 0).toLocaleString("en-IN")}
-            </div>
-          </div>
-        </article>
-      `).join("");
+          </article>
+        `;
+      }).join("");
     }
+
+    productGrid.addEventListener("click", function (event) {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const index = Number(button.dataset.index);
+      const product = categoryProducts.filter(item =>
+        (item.name || "").toLowerCase().includes(
+          searchInput.value.trim().toLowerCase()
+        )
+      )[index];
+
+      if (!product) {
+        alert("प्रोडक्ट नहीं मिला। कृपया दोबारा कोशिश करें।");
+        return;
+      }
+
+      openOrder(product);
+    });
 
     async function loadProducts() {
       try {
@@ -184,9 +348,13 @@
         }
 
         const response = await fetch("/api/products");
-        if (!response.ok) throw new Error("Products load nahi hue");
+
+        if (!response.ok) {
+          throw new Error("Products load nahi hue");
+        }
 
         const data = await response.json();
+
         const products = Array.isArray(data)
           ? data
           : (data.products || []);
@@ -197,15 +365,16 @@
 
         renderProducts();
       } catch (error) {
-        console.error(error);
+        console.error("Category products error:", error);
+
         productGrid.innerHTML =
           '<div class="empty">प्रोडक्ट लोड नहीं हुए। Dashboard पर वापस जाकर फिर कोशिश करें।</div>';
       }
     }
 
     searchInput.addEventListener("input", renderProducts);
+
     loadProducts();
   </script>
 </body>
 </html>
-```

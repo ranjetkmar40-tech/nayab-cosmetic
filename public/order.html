@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Now | Nayab Cosmetic</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #fff5f8;
+      color: #422633;
+    }
+
+    .container {
+      max-width: 440px;
+      margin: 30px auto;
+      padding: 24px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 5px 22px #00000012;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ad3e6c;
+      font-size: 25px;
+    }
+
+    .product {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      margin: 20px 0;
+      background: #fff5f8;
+      border-radius: 10px;
+    }
+
+    .product img {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+    }
+
+    .product h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .price {
+      color: #ad3e6c;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    textarea {
+      height: 90px;
+      resize: vertical;
+    }
+
+    .buy-btn {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: 0;
+      border-radius: 9px;
+      background: #ad3e6c;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .buy-btn:hover {
+      background: #87294f;
+    }
+
+    .back {
+      display: block;
+      margin-top: 18px;
+      text-align: center;
+      color: #ad3e6c;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>अपना ऑर्डर करें 🛍️</h1>
+
+    <div class="product">
+      <img id="productImage" alt="Product">
+      <div>
+        <h2 id="productName">Product</h2>
+        <div id="productPrice" class="price"></div>
+      </div>
+    </div>
+
+    <form id="orderForm">
+      <label for="customerName">1. अपना नाम लिखें</label>
+      <input
+        type="text"
+        id="customerName"
+        placeholder="पूरा नाम"
+        maxlength="100"
+        required
+      >
+
+      <label for="customerAddress">2. अपना पूरा पता लिखें</label>
+      <textarea
+        id="customerAddress"
+        placeholder="गाँव, मोहल्ला, शहर, जिला और पिन कोड"
+        maxlength="500"
+        required
+      ></textarea>
+
+      <label for="customerPhone">3. अपना मोबाइल नंबर लिखें</label>
+      <input
+        type="tel"
+        id="customerPhone"
+        placeholder="10 अंकों का मोबाइल नंबर"
+        inputmode="numeric"
+        pattern="[6-9][0-9]{9}"
+        maxlength="10"
+        required
+      >
+
+      <button type="submit" class="buy-btn">
+        Buy Now
+      </button>
+    </form>
+
+    <a href="index.html" class="back">← वापस शॉपिंग पर जाएँ</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const productName = params.get("name") || "";
+    const productPrice = Number(params.get("price"));
+    const productImage = params.get("image") || "";
+    const productCategory = params.get("category") || "";
+
+    document.getElementById("productName").textContent =
+      productName || "Product";
+
+    document.getElementById("productPrice").textContent =
+      Number.isFinite(productPrice) && productPrice >= 0
+        ? "₹" + productPrice.toLocaleString("en-IN")
+        : "";
+
+    const image = document.getElementById("productImage");
+
+    if (productImage) {
+      image.src = productImage;
+      image.onerror = function () {
+        image.style.display = "none";
+      };
+    } else {
+      image.style.display = "none";
+    }
+
+    document.getElementById("orderForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      if (
+        !productName ||
+        !Number.isFinite(productPrice) ||
+        productPrice < 0
+      ) {
+        alert("प्रोडक्ट की जानकारी नहीं मिली। वापस जाकर प्रोडक्ट चुनें।");
+        return;
+      }
+
+      const name = document.getElementById("customerName").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+
+      if (!name || !address || !/^[6-9][0-9]{9}$/.test(phone)) {
+        alert("कृपया तीनों जानकारी सही भरें।");
+        return;
+      }
+
+      const message =
+        "NAYAB COSMETIC - NEW ORDER\n\n" +
+        "Product: " + productName + "\n" +
+        "Category: " + productCategory + "\n" +
+        "Price: Rs. " + productPrice + "\n\n" +
+        "Customer Name: " + name + "\n" +
+        "Customer Address: " + address + "\n" +
+        "Customer Mobile: " + phone + "\n\n" +
+        "Payment: Cash on Delivery";
+
+      const url =
+        "https://wa.me/919198194880?text=" +
+        encodeURIComponent(message);
+
+      window.location.href = url;
+    });
+  </script>
+</body>
+</html>

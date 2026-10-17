@@ -200,6 +200,144 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.post("/api/orders", async (req, res) => {
+  try {
+    const { customer, items } = req.body;
+
+    if (
+      !customer ||
+      typeof customer.name !== "string" ||
+      !customer.name.trim() ||
+      typeof customer.phone !== "string" ||
+      !/^[0-9+\-\s()]{10,18}$/.test(customer.phone.trim()) ||
+      typeof customer.address !== "string" ||
+      !customer.address.trim() ||
+      customer.address.trim().length < 5
+    ) {
+      return res.status(400).json({
+        error: "Sahi naam, mobile number aur delivery address bharein."
+      });
+    }
+
+    if (
+      !Array.isArray(items) ||
+      items.length === 0 ||
+      items.length > 30
+    ) {
+      return res.status(400).json({
+        error: "Cart mein valid products add karein."
+      });
+    }
+
+    const productsPath = path.join(__dirname, "products.json");
+    const ordersPath = path.join(__dirname, "orders.json");
+
+    const products = JSON.parse(
+      await fs.promises.readFile(productsPath, "utf8")
+    );
+
+    let orders = [];
+
+    try {
+      orders = JSON.parse(
+        await fs.promises.readFile(ordersPath, "utf8")
+      );
+      if (!Array.isArray(orders)) orders = [];
+    } catch (err) {
+      if (err.code !== "ENOENT") throw err;
+    }
+
+    const orderItems = [];
+    const seenIds = new Set();
+
+    for (const item of items) {
+      const id = String(item.id || "");
+      const qty = Number(item.quantity);
+
+      if (
+        !id ||
+        seenIds.has(id) ||
+        !Number.isInteger(qty) ||
+        qty < 1 ||
+        qty > 20
+      ) {
+        return res.status(400).json({
+          error: "Product ya quantity sahi nahi hai."
+        });
+      }
+
+      seenIds.add(id);
+
+      const product = products.find(
+        p => String(p.id) === id
+      );
+
+      if (!product) {
+        return res.status(400).json({
+          error: "Cart mein ek product ab available nahi hai."
+        });
+      }
+
+      const price = Number(product.price);
+
+      if (!Number.isFinite(price) || price < 0) {
+        return res.status(400).json({
+          error: "Product ki price sahi nahi hai."
+        });
+      }
+
+      orderItems.push({
+        productId: String(product.id),
+        name: String(product.name),
+        price,
+        quantity: qty,
+        subtotal: price * qty
+      });
+    }
+
+    const total = orderItems.reduce(
+      (sum, item) => sum + item.subtotal,
+      0
+    );
+
+    const order = {
+      id: Date.now().toString() +
+          Math.random().toString(36).slice(2, 7),
+      customer: {
+        name: customer.name.trim().slice(0, 100),
+        phone: customer.phone.trim(),
+        address: customer.address.trim().slice(0, 500)
+      },
+      items: orderItems,
+      total,
+      paymentMethod: "Cash on Delivery",
+      deliveryMethod: "Home Delivery",
+      status: "Pending",
+      createdAt: new Date().toISOString()
+    };
+
+    orders.push(order);
+
+    await fs.promises.writeFile(
+      ordersPath,
+      JSON.stringify(orders, null, 2),
+      "utf8"
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Order place ho gaya!",
+      orderId: order.id,
+      total: order.total
+    });
+  } catch (error) {
+    console.error("Order error:", error);
+    return res.status(500).json({
+      error: "Order save nahi ho saka. Dobara try karein."
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log("Nayab Cosmetic: http://localhost:" + PORT);
   console.log("Admin Panel: http://localhost:" + PORT + "/admin.html");

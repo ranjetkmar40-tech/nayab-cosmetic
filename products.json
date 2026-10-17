@@ -40,5 +40,12 @@
     "category": "Accessories",
     "price": 10,
     "image": "/uploads/1791699418875-722402176.jpg"
+  },
+  {
+    "id": "1792130894278",
+    "name": "liqs",
+    "category": "Makeup",
+    "price": 32,
+    "image": "/uploads/1792130894229-695751802.png"
   }
 ]
